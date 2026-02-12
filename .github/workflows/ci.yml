@@ -8,6 +8,7 @@ jobs:
   test-modules:
     name: Test ${{ matrix.module }} (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
@@ -23,14 +24,14 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: npm
-          cache-dependency-path: ${{ matrix.module }}/package-lock.json
+          cache-dependency-path: personal-finance-tracker/${{ matrix.module }}/package-lock.json
 
       - name: Install dependencies
-        working-directory: ${{ matrix.module }}
+        working-directory: personal-finance-tracker/${{ matrix.module }}
         run: npm ci
 
       - name: Run tests
-        working-directory: ${{ matrix.module }}
+        working-directory: personal-finance-tracker/${{ matrix.module }}
         run: npm test
 
   build-app:
@@ -48,7 +49,9 @@ jobs:
           node-version: 20
 
       - name: Install root dependencies
+        working-directory: personal-finance-tracker
         run: npm ci || npm install
 
       - name: Build all modules
+        working-directory: personal-finance-tracker
         run: npm run build
