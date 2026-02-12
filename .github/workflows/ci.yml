@@ -1,4 +1,4 @@
-[9:42 am, 12/02/2026] +91 90004 98496: name: CI - Modular Personal Finance Tracker
+name: CI - Modular Personal Finance Tracker
 
 on:
   push:
