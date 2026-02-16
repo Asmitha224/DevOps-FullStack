@@ -25,11 +25,11 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install dependencies
-        working-directory: personal-finance-tracker/${{ matrix.module }}
+        working-directory: personal-finance-tracker-1/${{ matrix.module }}
         run: npm install
 
       - name: Run tests
-        working-directory: personal-finance-tracker/${{ matrix.module }}
+        working-directory: personal-finance-tracker-1/${{ matrix.module }}
         run: npm test
 
   build-app:
@@ -47,9 +47,9 @@ jobs:
           node-version: 20
 
       - name: Install root dependencies
-        working-directory: personal-finance-tracker
+        working-directory: personal-finance-tracker-1
         run: npm install
 
       - name: Build all modules
-        working-directory: personal-finance-tracker
+        working-directory: personal-finance-tracker-1
         run: npm run build
