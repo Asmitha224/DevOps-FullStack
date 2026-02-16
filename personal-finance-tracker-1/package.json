@@ -1,0 +1,14 @@
+{
+  "name": "personal-finance-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build-all.js",
+  "scripts": {
+    "build": "node build-all.js",
+    "test": "npm test --prefix dashboard && npm test --prefix expenses && npm test --prefix income"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

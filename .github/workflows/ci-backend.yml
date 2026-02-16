@@ -1,0 +1,51 @@
+name: CI - Integration Tests (Backend APIs)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+
+      - name: Start backend server
+        working-directory: backend
+        run: |
+          nohup npm start > server.log 2>&1 &
+          echo $! > server.pid
+
+      - name: Wait for server
+        run: |
+          i=0
+          until curl -sSf http://localhost:5000/api/dashboard >/dev/null 2>&1 || [ $i -ge 15 ]; do
+            i=$((i+1))
+            echo "Waiting for backend ($i)"
+            sleep 1
+          done
+
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test
+
+      - name: Stop backend server
+        if: always()
+        working-directory: backend
+        run: |
+          if [ -f server.pid ]; then
+            kill "$(cat server.pid)" || true
+          fi

@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "test": "cd personal-finance-tracker-1 && npm test",
+    "test:all": "npm run test:pft1 && npm run test:pft2",
+    "test:pft1": "cd personal-finance-tracker-1 && npm test",
+    "test:pft2": "cd personal-finance-tracker/personal-finance-tracker && npm test"
+  },
   "dependencies": {
     "react-router-dom": "^7.13.0"
   }
