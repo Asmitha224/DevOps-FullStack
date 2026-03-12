@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task Tracker</title>
+</head>
+<body>
+
+  <h1>Task Tracker Application</h1>
+
+  <!-- Add Task -->
+  <h2>Add Task</h2>
+  <form action="/tasks" method="POST">
+    <input type="text" name="title" placeholder="Enter task title" required>
+    <button type="submit">Add Task</button>
+  </form>
+
+  <hr>
+
+  <!-- Instructions -->
+  <h3>View Tasks</h3>
+  <p>Open in browser: <b>http://localhost:3000/tasks</b></p>
+
+  <h3>Update Task</h3>
+  <p>Use PUT request with task ID</p>
+
+  <h3>Delete Task</h3>
+  <p>Use DELETE request with task ID</p>
+
+</body>
+</html>
