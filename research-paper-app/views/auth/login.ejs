@@ -1,0 +1,54 @@
+<%- include('../partials/head') %>
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-branding">
+      <div class="auth-logo"><i class="fas fa-atom"></i></div>
+      <h1>ResearchHub</h1>
+      <p>Your intelligent platform for managing and discovering academic research papers.</p>
+      <ul class="auth-features">
+        <li><i class="fas fa-check"></i> Upload & manage PDF papers</li>
+        <li><i class="fas fa-check"></i> Advanced search & filtering</li>
+        <li><i class="fas fa-check"></i> Analytics & insights</li>
+        <li><i class="fas fa-check"></i> Team collaboration</li>
+      </ul>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+      <p class="auth-subtitle">Sign in to your account to continue</p>
+      <%- include('../partials/flash') %>
+      <form action="/auth/login" method="POST" class="auth-form">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+            <button type="button" class="toggle-password" onclick="togglePass(this)"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+      </form>
+      <p class="auth-link">Don't have an account? <a href="/auth/register">Create one</a></p>
+    </div>
+  </div>
+</div>
+<script>
+function togglePass(btn) {
+  const input = btn.closest('.input-icon').querySelector('input');
+  const icon = btn.querySelector('i');
+  input.type = input.type === 'password' ? 'text' : 'password';
+  icon.classList.toggle('fa-eye');
+  icon.classList.toggle('fa-eye-slash');
+}
+</script>
+</body></html>

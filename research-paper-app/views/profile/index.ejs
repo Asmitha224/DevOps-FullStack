@@ -1,0 +1,125 @@
+<%- include('../partials/head') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/navbar') %>
+    <div class="page-body">
+      <%- include('../partials/flash') %>
+      <div class="profile-grid">
+
+        <!-- Profile Info Form -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <h2><i class="fas fa-user-circle"></i> Profile Settings</h2>
+          </div>
+          <div class="profile-avatar-section">
+            <% if (profileUser.profilePicture) { %>
+              <img src="<%= profileUser.profilePicture %>" class="profile-avatar" alt="Profile Picture" id="avatarPreview" />
+            <% } else { %>
+              <div class="profile-avatar-placeholder" id="avatarPreview">
+                <%= profileUser.name.charAt(0).toUpperCase() %>
+              </div>
+            <% } %>
+            <div class="profile-avatar-stats">
+              <div><strong><%= profileUser.papersUploaded %></strong> Papers Uploaded</div>
+              <div><strong><%= profileUser.role.charAt(0).toUpperCase() + profileUser.role.slice(1) %></strong> Role</div>
+              <div>Joined <strong><%= new Date(profileUser.createdAt).toLocaleDateString('en-GB', {month:'long', year:'numeric'}) %></strong></div>
+            </div>
+          </div>
+          <form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data" class="paper-form">
+            <div class="form-group">
+              <label for="profilePicture">Profile Picture</label>
+              <div class="file-drop file-drop-sm" id="avatarDrop">
+                <i class="fas fa-camera"></i>
+                <p><label for="profilePicture" class="file-link">Upload photo</label> (JPG, PNG, GIF, WEBP — max 5MB)</p>
+                <input type="file" id="profilePicture" name="profilePicture" accept="image/*" class="file-input" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="name">Full Name <span class="required">*</span></label>
+              <div class="input-icon">
+                <i class="fas fa-user"></i>
+                <input type="text" id="name" name="name" value="<%= profileUser.name %>" required maxlength="100" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address <span class="required">*</span></label>
+              <div class="input-icon">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" name="email" value="<%= profileUser.email %>" required />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Profile</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Change Password Form -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <h2><i class="fas fa-lock"></i> Change Password</h2>
+          </div>
+          <form action="/profile/password?_method=PUT" method="POST" class="paper-form">
+            <div class="form-group">
+              <label for="currentPassword">Current Password <span class="required">*</span></label>
+              <div class="input-icon">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password" required />
+                <button type="button" class="toggle-password" onclick="togglePass(this)"><i class="fas fa-eye"></i></button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="newPassword">New Password <span class="required">*</span></label>
+              <div class="input-icon">
+                <i class="fas fa-key"></i>
+                <input type="password" id="newPassword" name="newPassword" placeholder="At least 6 characters" required minlength="6" />
+                <button type="button" class="toggle-password" onclick="togglePass(this)"><i class="fas fa-eye"></i></button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="confirmNewPassword">Confirm New Password <span class="required">*</span></label>
+              <div class="input-icon">
+                <i class="fas fa-key"></i>
+                <input type="password" id="confirmNewPassword" name="confirmNewPassword" placeholder="Repeat new password" required />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-shield-alt"></i> Change Password</button>
+            </div>
+          </form>
+          <div class="account-info">
+            <h4>Account Information</h4>
+            <div class="detail-item"><span class="detail-label">Last Login</span><span class="detail-value"><%= profileUser.lastLogin ? new Date(profileUser.lastLogin).toLocaleString() : 'N/A' %></span></div>
+            <div class="detail-item"><span class="detail-label">Account Created</span><span class="detail-value"><%= new Date(profileUser.createdAt).toLocaleString() %></span></div>
+            <div class="detail-item"><span class="detail-label">Last Updated</span><span class="detail-value"><%= new Date(profileUser.updatedAt).toLocaleString() %></span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+function togglePass(btn) {
+  const input = btn.closest('.input-icon').querySelector('input');
+  const icon = btn.querySelector('i');
+  input.type = input.type === 'password' ? 'text' : 'password';
+  icon.classList.toggle('fa-eye');
+  icon.classList.toggle('fa-eye-slash');
+}
+// Preview profile pic
+document.getElementById('profilePicture').addEventListener('change', function() {
+  const file = this.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const prev = document.getElementById('avatarPreview');
+      prev.outerHTML = `<img src="${e.target.result}" class="profile-avatar" alt="Preview" id="avatarPreview" />`;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+</script>
+</body></html>

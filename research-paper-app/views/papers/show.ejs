@@ -1,0 +1,76 @@
+<%- include('../partials/head') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/navbar') %>
+    <div class="page-body">
+      <%- include('../partials/flash') %>
+
+      <div class="paper-show-grid">
+        <!-- Left: Metadata -->
+        <div class="paper-meta-card">
+          <div class="paper-meta-header">
+            <span class="cat-badge cat-badge-lg"><%= paper.category %></span>
+            <span class="paper-year"><%= paper.year %></span>
+          </div>
+          <h1 class="paper-title"><%= paper.title %></h1>
+          <p class="paper-author"><i class="fas fa-user-edit"></i> <%= paper.author %></p>
+          <div class="paper-divider"></div>
+          <h3>Abstract</h3>
+          <p class="paper-abstract"><%= paper.abstract %></p>
+          <div class="paper-divider"></div>
+          <div class="paper-details-list">
+            <div class="detail-item">
+              <span class="detail-label">Uploaded by</span>
+              <span class="detail-value"><%= paper.uploadedBy ? paper.uploadedBy.name : 'Unknown' %></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Upload date</span>
+              <span class="detail-value"><%= new Date(paper.createdAt).toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'}) %></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">File size</span>
+              <span class="detail-value"><%= (paper.pdfFile.size / 1024 / 1024).toFixed(2) %> MB</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Original filename</span>
+              <span class="detail-value"><%= paper.pdfFile.originalname %></span>
+            </div>
+          </div>
+          <div class="paper-actions">
+            <a href="/uploads/<%= paper.pdfFile.filename %>" target="_blank" class="btn btn-primary btn-full">
+              <i class="fas fa-eye"></i> View PDF
+            </a>
+            <a href="/uploads/<%= paper.pdfFile.filename %>" download="<%= paper.pdfFile.originalname %>" class="btn btn-outline btn-full">
+              <i class="fas fa-download"></i> Download
+            </a>
+            <% if (session.userId === paper.uploadedBy?._id?.toString() || session.role === 'admin') { %>
+            <a href="/papers/<%= paper._id %>/edit" class="btn btn-outline btn-full">
+              <i class="fas fa-edit"></i> Edit Metadata
+            </a>
+            <form action="/papers/<%= paper._id %>?_method=DELETE" method="POST" onsubmit="return confirmDelete('this paper')">
+              <button type="submit" class="btn btn-danger btn-full"><i class="fas fa-trash"></i> Delete Paper</button>
+            </form>
+            <% } %>
+          </div>
+          <a href="/papers" class="back-link"><i class="fas fa-arrow-left"></i> Back to Papers</a>
+        </div>
+
+        <!-- Right: PDF Preview -->
+        <div class="pdf-preview-card">
+          <div class="pdf-preview-header">
+            <span><i class="fas fa-file-pdf"></i> PDF Preview</span>
+            <a href="/uploads/<%= paper.pdfFile.filename %>" target="_blank" class="btn btn-xs btn-ghost">
+              <i class="fas fa-external-link-alt"></i> Open in new tab
+            </a>
+          </div>
+          <iframe src="/uploads/<%= paper.pdfFile.filename %>" class="pdf-iframe" title="<%= paper.title %>">
+            <p>Your browser does not support PDFs. <a href="/uploads/<%= paper.pdfFile.filename %>">Download the PDF</a>.</p>
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body></html>

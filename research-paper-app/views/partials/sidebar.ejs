@@ -1,0 +1,32 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-icon"><i class="fas fa-atom"></i></span>
+    <span class="logo-text">ResearchHub</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="/dashboard" class="nav-item <%= title === 'Dashboard' ? 'active' : '' %>">
+      <i class="fas fa-th-large"></i><span>Dashboard</span>
+    </a>
+    <a href="/papers" class="nav-item <%= title === 'Research Papers' ? 'active' : '' %>">
+      <i class="fas fa-file-pdf"></i><span>Papers</span>
+    </a>
+    <a href="/papers/create" class="nav-item <%= title === 'Upload Paper' ? 'active' : '' %>">
+      <i class="fas fa-cloud-upload-alt"></i><span>Upload Paper</span>
+    </a>
+    <% if (session.role === 'admin') { %>
+    <a href="/users" class="nav-item <%= title === 'User Management' ? 'active' : '' %>">
+      <i class="fas fa-users-cog"></i><span>Users</span>
+    </a>
+    <% } %>
+    <a href="/profile" class="nav-item <%= title === 'My Profile' ? 'active' : '' %>">
+      <i class="fas fa-user-circle"></i><span>Profile</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="/auth/logout" class="nav-item logout-btn">
+      <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+    </a>
+  </div>
+</aside>

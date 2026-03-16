@@ -1,0 +1,91 @@
+<%- include('../partials/head') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/navbar') %>
+    <div class="page-body">
+      <%- include('../partials/flash') %>
+      <div class="form-card">
+        <div class="form-card-header">
+          <h2><i class="fas fa-edit"></i> Edit Paper Metadata</h2>
+          <a href="/papers/<%= paper._id %>" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+        <form action="/papers/<%= paper._id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="paper-form">
+          <div class="form-row">
+            <div class="form-group full">
+              <label for="title">Paper Title <span class="required">*</span></label>
+              <input type="text" id="title" name="title" value="<%= paper.title %>" required maxlength="300" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="author">Author(s) <span class="required">*</span></label>
+              <input type="text" id="author" name="author" value="<%= paper.author %>" required maxlength="200" />
+            </div>
+            <div class="form-group">
+              <label for="year">Publication Year <span class="required">*</span></label>
+              <input type="number" id="year" name="year" value="<%= paper.year %>" min="1900" max="<%= currentYear %>" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full">
+              <label for="category">Category <span class="required">*</span></label>
+              <select id="category" name="category" required>
+                <% categories.forEach(cat => { %>
+                <option value="<%= cat %>" <%= paper.category === cat ? 'selected' : '' %>><%= cat %></option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full">
+              <label for="abstract">Abstract <span class="required">*</span></label>
+              <textarea id="abstract" name="abstract" rows="6" required maxlength="5000"><%= paper.abstract %></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full">
+              <label>Replace PDF <span class="form-hint">(optional — leave blank to keep existing)</span></label>
+              <div class="current-file">
+                <i class="fas fa-file-pdf"></i>
+                <span>Current: <%= paper.pdfFile.originalname %> (<%= (paper.pdfFile.size/1024/1024).toFixed(2) %> MB)</span>
+              </div>
+              <div class="file-drop" id="fileDrop">
+                <i class="fas fa-file-pdf"></i>
+                <p>Drag & drop a new PDF, or <label for="pdfFile" class="file-link">browse</label></p>
+                <small>Maximum file size: 50MB</small>
+                <input type="file" id="pdfFile" name="pdfFile" accept="application/pdf" class="file-input" />
+              </div>
+              <div id="filePreview" class="file-preview" style="display:none"></div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <a href="/papers/<%= paper._id %>" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+const input = document.getElementById('pdfFile');
+const drop = document.getElementById('fileDrop');
+const preview = document.getElementById('filePreview');
+input.addEventListener('change', showFile);
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+drop.addEventListener('drop', e => {
+  e.preventDefault(); drop.classList.remove('drag-over');
+  input.files = e.dataTransfer.files; showFile();
+});
+function showFile() {
+  const file = input.files[0];
+  if (file) {
+    preview.style.display = 'flex';
+    preview.innerHTML = `<i class="fas fa-file-pdf"></i> <span>${file.name}</span> <small>(${(file.size/1024/1024).toFixed(2)} MB)</small>`;
+  }
+}
+</script>
+</body></html>

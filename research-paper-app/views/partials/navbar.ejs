@@ -1,0 +1,21 @@
+<header class="topbar">
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="topbar-title"><%= title %></div>
+  <div class="topbar-right">
+    <% if (session.role === 'admin') { %>
+    <span class="badge-role admin">Admin</span>
+    <% } else { %>
+    <span class="badge-role user">User</span>
+    <% } %>
+    <a href="/profile" class="topbar-user">
+      <% if (session.profilePicture) { %>
+        <img src="<%= session.profilePicture %>" alt="avatar" class="topbar-avatar" />
+      <% } else { %>
+        <span class="topbar-initials"><%= session.userName ? session.userName.charAt(0).toUpperCase() : 'U' %></span>
+      <% } %>
+      <span class="topbar-name"><%= session.userName || 'User' %></span>
+    </a>
+  </div>
+</header>

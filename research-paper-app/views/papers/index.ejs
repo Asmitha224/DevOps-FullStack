@@ -1,0 +1,114 @@
+<%- include('../partials/head') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/navbar') %>
+    <div class="page-body">
+      <%- include('../partials/flash') %>
+
+      <!-- Search & Filter Bar -->
+      <div class="filter-bar">
+        <form action="/papers" method="GET" class="filter-form">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" placeholder="Search by title, author, or abstract…" value="<%= currentSearch %>" />
+          </div>
+          <select name="category">
+            <option value="">All Categories</option>
+            <% categories.forEach(cat => { %>
+            <option value="<%= cat %>" <%= currentCategory === cat ? 'selected' : '' %>><%= cat %></option>
+            <% }) %>
+          </select>
+          <input type="number" name="year" placeholder="Year" min="1900" max="<%= new Date().getFullYear() %>" value="<%= currentYear %>" style="width:100px" />
+          <select name="sort">
+            <option value="newest" <%= currentSort==='newest'?'selected':'' %>>Newest First</option>
+            <option value="oldest" <%= currentSort==='oldest'?'selected':'' %>>Oldest First</option>
+            <option value="title" <%= currentSort==='title'?'selected':'' %>>Title A-Z</option>
+            <option value="year" <%= currentSort==='year'?'selected':'' %>>Year Desc</option>
+          </select>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Filter</button>
+          <a href="/papers" class="btn btn-outline">Reset</a>
+        </form>
+        <a href="/papers/create" class="btn btn-primary"><i class="fas fa-plus"></i> Upload Paper</a>
+      </div>
+
+      <!-- Results count -->
+      <div class="results-info">
+        Showing <strong><%= papers.length %></strong> of <strong><%= totalPapers %></strong> papers
+        <% if (currentSearch || currentCategory || currentYear) { %>
+          — <a href="/papers">Clear filters</a>
+        <% } %>
+      </div>
+
+      <% if (papers.length === 0) { %>
+        <div class="empty-state large">
+          <i class="fas fa-file-pdf"></i>
+          <h3>No papers found</h3>
+          <p>Try adjusting your filters or <a href="/papers/create">upload a new paper</a>.</p>
+        </div>
+      <% } else { %>
+      <div class="table-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Year</th>
+                <th>Uploaded By</th>
+                <th>Size</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% papers.forEach(paper => { %>
+              <tr>
+                <td class="td-title">
+                  <a href="/papers/<%= paper._id %>">
+                    <%= paper.title.length > 55 ? paper.title.substring(0,55)+'…' : paper.title %>
+                  </a>
+                </td>
+                <td><%= paper.author %></td>
+                <td><span class="cat-badge"><%= paper.category %></span></td>
+                <td><%= paper.year %></td>
+                <td><%= paper.uploadedBy ? paper.uploadedBy.name : 'Unknown' %></td>
+                <td><%= (paper.pdfFile.size / 1024 / 1024).toFixed(2) %> MB</td>
+                <td><%= new Date(paper.createdAt).toLocaleDateString() %></td>
+                <td class="td-actions">
+                  <a href="/papers/<%= paper._id %>" class="btn btn-xs btn-ghost" title="View"><i class="fas fa-eye"></i></a>
+                  <% if (session.userId === paper.uploadedBy?._id?.toString() || session.role === 'admin') { %>
+                  <a href="/papers/<%= paper._id %>/edit" class="btn btn-xs btn-ghost" title="Edit"><i class="fas fa-edit"></i></a>
+                  <form action="/papers/<%= paper._id %>?_method=DELETE" method="POST" style="display:inline" onsubmit="return confirmDelete('this paper')">
+                    <button type="submit" class="btn btn-xs btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                  </form>
+                  <% } %>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <% if (totalPages > 1) { %>
+      <div class="pagination">
+        <% if (currentPage > 1) { %>
+          <a href="/papers?page=<%= currentPage-1 %>&search=<%= currentSearch %>&category=<%= currentCategory %>&year=<%= currentYear %>&sort=<%= currentSort %>" class="page-btn"><i class="fas fa-chevron-left"></i></a>
+        <% } %>
+        <% for(let i=1; i<=totalPages; i++) { %>
+          <a href="/papers?page=<%= i %>&search=<%= currentSearch %>&category=<%= currentCategory %>&year=<%= currentYear %>&sort=<%= currentSort %>" class="page-btn <%= i===currentPage ? 'active' : '' %>"><%= i %></a>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+          <a href="/papers?page=<%= currentPage+1 %>&search=<%= currentSearch %>&category=<%= currentCategory %>&year=<%= currentYear %>&sort=<%= currentSort %>" class="page-btn"><i class="fas fa-chevron-right"></i></a>
+        <% } %>
+      </div>
+      <% } %>
+      <% } %>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body></html>

@@ -1,0 +1,42 @@
+<%- include('../partials/head') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/navbar') %>
+    <div class="page-body">
+      <%- include('../partials/flash') %>
+      <div class="form-card form-card-narrow">
+        <div class="form-card-header">
+          <h2><i class="fas fa-user-shield"></i> Change User Role</h2>
+          <a href="/users" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+        <div class="user-info-block">
+          <% if (editUser.profilePicture) { %>
+            <img src="<%= editUser.profilePicture %>" class="user-avatar-lg" alt="avatar" />
+          <% } else { %>
+            <span class="user-initials-lg"><%= editUser.name.charAt(0).toUpperCase() %></span>
+          <% } %>
+          <div>
+            <h3><%= editUser.name %></h3>
+            <p><%= editUser.email %></p>
+          </div>
+        </div>
+        <form action="/users/<%= editUser._id %>?_method=PUT" method="POST" class="paper-form">
+          <div class="form-group">
+            <label for="role">Assign Role</label>
+            <select id="role" name="role" required>
+              <option value="user" <%= editUser.role === 'user' ? 'selected' : '' %>>User — Can upload and manage own papers</option>
+              <option value="admin" <%= editUser.role === 'admin' ? 'selected' : '' %>>Admin — Full system access including user management</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <a href="/users" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Role</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body></html>
